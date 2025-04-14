@@ -37,7 +37,7 @@ import Login from './pages/Login';
 
 import Dashboard from './pages/Dashboard';
 import PrivateRoute from './components/PrivateRoute';
-import OAuthSuccess from './pages/temp';
+import OAuthSuccess from './pages/OAuthSuccess';
 
 
 
