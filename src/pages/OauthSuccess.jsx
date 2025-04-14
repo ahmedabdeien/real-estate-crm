@@ -1,31 +1,37 @@
-// src/pages/OauthSuccess.jsx
+// src/pages/OAuthSuccess.jsx
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-const OauthSuccess = () => {
+const OAuthSuccess = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
-    const name = params.get('name');
+    const query = new URLSearchParams(location.search);
+    const token = query.get('token');
+    const name = query.get('name');
 
-    if (token) {
-      console.log('✅ التوكن اللي رجع من السيرفر:', token);
+    if (token && name) {
       localStorage.setItem('token', token);
       localStorage.setItem('name', name);
-      navigate('/dashboard'); // أو أي صفحة رئيسية
+
+      // يمكنك تغيير المسار هنا حسب ما يناسبك
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1500);
     } else {
-      console.log('❌ مفيش توكن مرجع!');
       navigate('/login');
     }
-  }, []);
+  }, [location, navigate]);
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <h1 className="text-lg font-bold">جارٍ تسجيل الدخول...</h1>
+    <div className="flex items-center justify-center h-screen bg-white text-black">
+      <div className="text-center">
+        <h1 className="text-3xl font-bold mb-4">🎉 مرحبًا بك!</h1>
+        <p className="text-lg">جاري تسجيل الدخول...</p>
+      </div>
     </div>
   );
 };
 
-export default OauthSuccess;
+export default OAuthSuccess;

@@ -30,13 +30,14 @@ import NotFound from './pages/NotFound';
 import Home from './pages/Home';
 import Footer from './components/Footer';
 
-import OauthSuccess from './pages/OauthSuccess';
+
 import Register from './pages/Register';
 import Login from './pages/Login';
 
 
 import Dashboard from './pages/Dashboard';
 import PrivateRoute from './components/PrivateRoute';
+import OAuthSuccess from './pages/OAuthSuccess';
 
 
 
@@ -54,32 +55,32 @@ function App() {
 
     <Route path="/register" element={<Register />} />
     <Route path="/login" element={<Login />} />
-    <Route path="/oauth-success" element={<OauthSuccess />} />
+    <Route path="/oauth-success" element={<OAuthSuccess />} />
 
     <Route path="/dashboard" element={<PrivateRoute> <Dashboard /></PrivateRoute>}/>
     {/* <Route path="/dashboard" element={<Dashboard />} /> */}
 
-    <Route path="/customers" element={<Customers />} />
-    <Route path="/customers/new" element={<AddCustomer />} />
-    <Route path="/customers/edit/:id" element={<EditCustomer />} />
-    <Route path="/customers/:id" element={<CustomerDetails />} />
-    <Route path="/contracts" element={<Contracts />} />
-    <Route path="/contracts/:id" element={<ContractDetails />} />
-    <Route path="/contracts/new" element={<AddContract />} />
-    <Route path="/contracts/edit/:id" element={<EditContract/>} />
+    <Route path="/customers" element={<PrivateRoute><Customers /></PrivateRoute>} />
+    <Route path="/customers/new" element={<PrivateRoute><AddCustomer /></PrivateRoute>} />
+    <Route path="/customers/edit/:id" element={<PrivateRoute><EditCustomer /></PrivateRoute>} />
+    <Route path="/customers/:id" element={<PrivateRoute><CustomerDetails /></PrivateRoute>} />
+    <Route path="/contracts" element={<PrivateRoute><Contracts /></PrivateRoute>} />
+    <Route path="/contracts/:id" element={<PrivateRoute><ContractDetails /></PrivateRoute>} />
+    <Route path="/contracts/new" element={<PrivateRoute><AddContract /></PrivateRoute>} />
+    <Route path="/contracts/edit/:id" element={<PrivateRoute><EditContract/></PrivateRoute>} />
 
-    <Route path="/invoices/contracts/:id" element={<InvoiceDetails />} />
-    <Route path="/invoices" element={<Invoices />} />
-    <Route path="/invoices/new" element={<AddInvoice />} />
-    <Route path="/invoices/edit/:id" element={<EditInvoice />} />
-    <Route path="/units" element={<Units />} />
-    <Route path="/units/new" element={<AddUnit />} />
-    <Route path="/units/edit/:id" element={<EditUnit />} />
-    <Route path="/units/:id" element={<UnitDetails />} />
-    <Route path="/properties" element={<Properties />} />
-    <Route path="/properties/new" element={<AddProperty />} />
-    <Route path="/properties/:id" element={<PropertyDetails />} />
-    <Route path="/properties/edit/:id" element={<EditProperty />} />
+    <Route path="/invoices/contracts/:id" element={<PrivateRoute><InvoiceDetails /></PrivateRoute>} />
+    <Route path="/invoices" element={<PrivateRoute><Invoices /></PrivateRoute>} />
+    <Route path="/invoices/new" element={<PrivateRoute><AddInvoice /></PrivateRoute>} />
+    <Route path="/invoices/edit/:id" element={<PrivateRoute><EditInvoice /></PrivateRoute>} />
+    <Route path="/units" element={<PrivateRoute><Units /></PrivateRoute>} />
+    <Route path="/units/new" element={<PrivateRoute><AddUnit /></PrivateRoute>} />
+    <Route path="/units/edit/:id" element={<PrivateRoute><EditUnit /></PrivateRoute>} />
+    <Route path="/units/:id" element={<PrivateRoute><UnitDetails /></PrivateRoute>} />
+    <Route path="/properties" element={<PrivateRoute><Properties /></PrivateRoute>} />
+    <Route path="/properties/new" element={<PrivateRoute><AddProperty /></PrivateRoute>} />
+    <Route path="/properties/:id" element={<PrivateRoute><PropertyDetails /></PrivateRoute>} />
+    <Route path="/properties/edit/:id" element={<PrivateRoute><EditProperty /></PrivateRoute>} />
     </Routes>
     <Footer/>
     </>

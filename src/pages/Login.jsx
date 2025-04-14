@@ -3,6 +3,7 @@ import { useState } from 'react';
 import axios from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 import { googleLoginURL, facebookLoginURL } from '../utils/oauthLinks';
+
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -36,9 +37,13 @@ const Login = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
-      <h2 className="text-xl font-bold mb-4 text-center">تسجيل الدخول</h2>
-      {message && <p className="text-center mb-4">{message}</p>}
+    <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-md rounded-md text-right" dir="rtl">
+      <h2 className="text-2xl font-bold mb-4 text-center text-blue-700">تسجيل الدخول</h2>
+      {message && (
+        <div className="mb-4 text-center text-sm text-red-600 font-medium">
+          {message}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
@@ -47,7 +52,7 @@ const Login = () => {
           placeholder="البريد الإلكتروني"
           value={formData.email}
           onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
+          className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
 
@@ -57,30 +62,33 @@ const Login = () => {
           placeholder="كلمة المرور"
           value={formData.password}
           onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
+          className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
         >
           تسجيل الدخول
         </button>
       </form>
-      <button
-  onClick={() => window.location.href = googleLoginURL}
-  className="bg-red-600 text-white py-2 px-4 rounded w-full mt-4"
->
-  تسجيل الدخول باستخدام Google
-</button>
 
-<button
-  onClick={() => window.location.href = facebookLoginURL}
-  className="bg-blue-600 text-white py-2 px-4 rounded w-full mt-2"
->
-  تسجيل الدخول باستخدام Facebook
-</button>
+      <div className="my-4 text-center text-sm text-gray-500">أو</div>
+
+      <button
+        onClick={() => window.location.href = googleLoginURL}
+        className="bg-red-600 text-white py-2 px-4 rounded w-full hover:bg-red-700 transition"
+      >
+        تسجيل الدخول باستخدام Google
+      </button>
+
+      <button
+        onClick={() => window.location.href = facebookLoginURL}
+        className="bg-blue-700 text-white py-2 px-4 rounded w-full mt-2 hover:bg-blue-800 transition"
+      >
+        تسجيل الدخول باستخدام Facebook
+      </button>
     </div>
   );
 };
