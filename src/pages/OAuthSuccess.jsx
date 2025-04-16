@@ -1,10 +1,12 @@
 // src/pages/OAuthSuccess.jsx
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import useAuthStore from '../store/useAuthStore';
 
 const OAuthSuccess = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { login } = useAuthStore();
 
   useEffect(() => {
     const query = new URLSearchParams(location.search);
@@ -12,17 +14,22 @@ const OAuthSuccess = () => {
     const name = query.get('name');
 
     if (token && name) {
-      localStorage.setItem('token', token);
-      localStorage.setItem('name', name);
+      // 🟢 تسجيل دخول بـ بيانات افتراضية (لأن OAuth مش بيرجع role أو userId)
+      login({
+        token,
+        name,
+        role: 'viewer',   // 🔐 أو 'user' لو ده الدور الافتراضي عندك
+        userId: 'oauth-user',
+      });
 
-      // يمكنك تغيير المسار هنا حسب ما يناسبك
+      // 🧭 توجيه المستخدم حسب الدور (ممكن تعدلها لاحقًا)
       setTimeout(() => {
-        navigate('/dashboard');
-      }, 1500);
+        navigate('/contracts'); // viewer ممكن يروح على العقود مثلًا
+      }, 1000);
     } else {
       navigate('/login');
     }
-  }, [location, navigate]);
+  }, [location, navigate, login]);
 
   return (
     <div className="flex items-center justify-center h-screen bg-white text-black">

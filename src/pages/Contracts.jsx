@@ -8,10 +8,12 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { ClipLoader } from 'react-spinners';
 import Breadcrumb from '../components/Breadcrumb';
+import useAuthStore from '../store/useAuthStore';
 const Contracts = () => {
   const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const { role } = useAuthStore();
   const filteredContracts = contracts.filter((c) =>
     c.customer?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     c.type?.includes(searchTerm)
@@ -190,7 +192,7 @@ const Contracts = () => {
                       <Pencil size={18} />
                       <span className="hidden sm:inline text-xs">تعديل</span>
                     </Link>
-      
+                    {['admin'].includes(role) && (
                     <button
                       onClick={() => handleDelete(contract._id)}
                       className="flex items-center gap-1 text-red-600 hover:text-red-800"
@@ -199,6 +201,7 @@ const Contracts = () => {
                       <Trash size={18} />
                       <span className="hidden sm:inline text-xs">حذف</span>
                     </button>
+                    )}
       
                     <Link
                       to={`/invoices/contracts/${contract._id}`}

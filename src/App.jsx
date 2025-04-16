@@ -38,6 +38,12 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import PrivateRoute from './components/PrivateRoute';
 import OAuthSuccess from './pages/OAuthSuccess';
+import AdminRoute from './components/AdminPrivateRoute';
+import RoleRoute from './routes/RoleRoute';
+import Unauthorized from './pages/Unauthorized';
+import Users from './pages/Users';
+import Profile from './pages/Profile';
+import EditProfile from './pages/EditProfile';
 
 
 
@@ -53,16 +59,20 @@ function App() {
     <Route path="*" element={<NotFound />} />
     <Route path="/" element={<Home />} />
 
+    <Route path="/unauthorized" element={<Unauthorized />} />
+
     <Route path="/register" element={<Register />} />
     <Route path="/login" element={<Login />} />
     <Route path="/oauth-success" element={<OAuthSuccess />} />
 
-    <Route path="/dashboard" element={<PrivateRoute> <Dashboard /></PrivateRoute>}/>
+    <Route path="/dashboard" element={<AdminRoute> <Dashboard /></AdminRoute>}/>
+    <Route path="/users" element={<RoleRoute allowedRoles={['admin']}><Users /></RoleRoute>} />
     {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-
+    <Route path="/edit-profile" element={<EditProfile />} />
+    <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
     <Route path="/customers" element={<PrivateRoute><Customers /></PrivateRoute>} />
     <Route path="/customers/new" element={<PrivateRoute><AddCustomer /></PrivateRoute>} />
-    <Route path="/customers/edit/:id" element={<PrivateRoute><EditCustomer /></PrivateRoute>} />
+    <Route path="/customers/edit/:id" element={<RoleRoute allowedRoles={['admin', 'broker']}><EditCustomer /></RoleRoute>} />
     <Route path="/customers/:id" element={<PrivateRoute><CustomerDetails /></PrivateRoute>} />
     <Route path="/contracts" element={<PrivateRoute><Contracts /></PrivateRoute>} />
     <Route path="/contracts/:id" element={<PrivateRoute><ContractDetails /></PrivateRoute>} />

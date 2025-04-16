@@ -1,8 +1,8 @@
 // src/pages/Register.jsx
 import { useState } from 'react';
 import axios from '../api/axios';
-import { useNavigate } from 'react-router-dom';
-import { googleLoginURL, facebookLoginURL } from '../utils/oauthLinks';
+import { useNavigate, Link } from 'react-router-dom';
+import { User, Mail, Lock, ShieldPlus, Phone, MapPin, AlertCircle } from 'lucide-react';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -10,88 +10,119 @@ const Register = () => {
     name: '',
     email: '',
     password: '',
-    role: 'user', // الافتراضي
+    phone: '',
+    address: '',
   });
-
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState([]);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       await axios.post('/auth/register', formData);
       setMessage('✅ تم إنشاء الحساب بنجاح!');
-      setTimeout(() => navigate('/login'), 1500); // تحويل بعد ثانية ونص
+      setTimeout(() => navigate('/login'), 1500);
     } catch (err) {
-      setMessage(err.response?.data?.msg || '❌ فشل في إنشاء الحساب');
+      const resMsg = err.response?.data?.errors || err.response?.data?.msg || '❌ فشل في إنشاء الحساب';
+      setMessage(resMsg);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
-      <h2 className="text-xl font-bold mb-4 text-center">إنشاء حساب جديد</h2>
-      {message && <p className="text-center mb-4">{message}</p>}
+    <div className="max-w-xl mx-auto mt-10 p-6 bg-white shadow-lg border rounded-md text-right animate-fade-in" dir="rtl">
+      <h2 className="text-2xl font-bold mb-4 text-center text-blue-700 flex items-center justify-center gap-2">
+        <ShieldPlus size={22} />
+        إنشاء حساب جديد
+      </h2>
+
+     {message && (
+  <div className="bg-red-100 text-red-700 border border-red-300 text-sm px-4 py-2 rounded mb-4">
+    {Array.isArray(message)
+      ? message.map((msg, idx) => <div key={idx}>• {msg}</div>)
+      : message}
+  </div>
+)}
+
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          name="name"
-          placeholder="الاسم"
-          value={formData.name}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-          required
-        />
+        <div className="relative">
+          <User className="absolute left-3 top-3 text-gray-400" size={18} />
+          <input
+            type="text"
+            name="name"
+            placeholder="الاسم الكامل"
+            value={formData.name}
+            onChange={handleChange}
+            className="w-full border pl-8 pr-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="البريد الإلكتروني"
-          value={formData.email}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-          required
-        />
+        <div className="relative">
+          <Mail className="absolute left-3 top-3 text-gray-400" size={18} />
+          <input
+            type="email"
+            name="email"
+            placeholder="البريد الإلكتروني"
+            value={formData.email}
+            onChange={handleChange}
+            className="w-full border pl-8 pr-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
 
-        <input
-          type="password"
-          name="password"
-          placeholder="كلمة المرور"
-          value={formData.password}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-          required
-        />
+        <div className="relative">
+          <Lock className="absolute left-3 top-3 text-gray-400" size={18} />
+          <input
+            type="password"
+            name="password"
+            placeholder="كلمة المرور"
+            value={formData.password}
+            onChange={handleChange}
+            className="w-full border pl-8 pr-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+
+        <div className="relative">
+          <Phone className="absolute left-3 top-3 text-gray-400" size={18} />
+          <input
+            type="text"
+            name="phone"
+            placeholder="رقم الهاتف (اختياري)"
+            value={formData.phone}
+            onChange={handleChange}
+            className="w-full border pl-8 pr-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div className="relative">
+          <MapPin className="absolute left-3 top-3 text-gray-400" size={18} />
+          <input
+            type="text"
+            name="address"
+            placeholder="العنوان (اختياري)"
+            value={formData.address}
+            onChange={handleChange}
+            className="w-full border pl-8 pr-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
         >
           إنشاء الحساب
         </button>
       </form>
-      <div className="my-6 text-center text-gray-500 text-sm">أو تسجيل الدخول بواسطة</div>
 
-<div className="flex flex-col gap-2">
-  <button
-    onClick={() => (window.location.href = googleLoginURL)}
-    className="bg-red-600 text-white py-2 rounded hover:bg-red-700"
-  >
-    تسجيل الدخول باستخدام Google
-  </button>
-
-  <button
-    onClick={() => (window.location.href = facebookLoginURL)}
-    className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-  >
-    تسجيل الدخول باستخدام Facebook
-  </button>
-</div>
-
+      <p className="text-center text-sm mt-4">
+        لديك حساب بالفعل؟{' '}
+        <Link to="/login" className="text-blue-600 hover:underline">تسجيل الدخول</Link>
+      </p>
     </div>
   );
 };
