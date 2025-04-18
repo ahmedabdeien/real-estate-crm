@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Eye, Pencil, Trash, Plus, Search, Users } from 'lucide-react';
 import Breadcrumb from './../components/Breadcrumb';
 import { ClipLoader } from 'react-spinners';
+import useSweetAlert from '../utils/useSweetAlert';
 const Customers = () => {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,34 +24,98 @@ const Customers = () => {
     };
     fetchCustomers();
   }, []);
+  const { confirm, success, error } = useSweetAlert();
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('هل تريد حذف هذا العميل؟')) return;
-    try {
-      await axios.delete(`/customers/${id}`);
-      setCustomers((prev) => prev.filter((c) => c._id !== id));
-    } catch (err) {
-      console.error('فشل في الحذف', err);
-    }
+  const handleDelete = (id) => {
+    confirm({
+      title: 'هل تريد حذف هذا العميل؟',
+      text: 'لن تتمكن من استرجاع البيانات بعد الحذف!',
+      confirmText: 'نعم، احذف',
+      cancelText: 'لا، إلغاء',
+      onConfirm: async () => {
+        try {
+          await axios.delete(`/customers/${id}`);
+          setCustomers((prev) => prev.filter((c) => c._id !== id));
+          success('تم حذف العميل بنجاح');
+        } catch (err) {
+          console.error('فشل في الحذف', err);
+          error('فشل في حذف العميل', 'حدث خطأ أثناء الحذف، حاول مرة أخرى.');
+        }
+      }
+    });
   };
+  
 
   const filtered = customers.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase())
   );
 
+  if (loading) {
+    return (
+      <div className="flex flex-col justify-center items-center space-y-4 w-full h-screen">
+        <ClipLoader size={50} color="#016FB9" />
+        <p className="text-gray-600">جارٍ تحميل البيانات...</p>
+      </div>
+    );
+  }
+  const handleDeleteAll = () => {
+    if (customers.length === 0) return;
+  
+    confirm({
+      title: 'هل تريد حذف جميع العملاء؟',
+      text: 'لن تتمكن من استرجاع البيانات بعد الحذف!',
+      confirmText: 'نعم، احذف الكل',
+      cancelText: 'إلغاء',
+      onConfirm: async () => {
+        try {
+          await axios.delete('/customers/all'); // تأكد من وجود هذا المسار في backend
+          setCustomers([]);
+          success('تم حذف جميع العملاء بنجاح');
+        } catch (err) {
+          error('فشل في حذف الكل', 'حدث خطأ أثناء الحذف.');
+        }
+      }
+    });
+  };
+  
   return (
     <div className="pt-4 p-6">
       <Breadcrumb/>
      <div className="mb-6 p-4 bg-blue-50 border border-blue-200 text-blue-800 rounded-lg shadow-sm">
-  <h2 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
-    <Users size={26} /> العملاء
-  </h2>
+     <h2 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
+  <Users size={26} /> العملاء
+  <span className="bg-blue-600 text-white text-xs font-medium px-2 py-1 rounded-full">
+    {customers.length}
+  </span>
+</h2>
+
 </div>
 
 {/* التحكم (إضافة + بحث) */}
 <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
   {/* حقل البحث */}
-  <div className="relative w-full md:w-2/3">
+
+
+  {/* زر إضافة عميل */}
+  <div className="flex items-center gap-2  flex-wrap">
+  <Link
+    to="/customers/new"
+    className="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-md flex items-center justify-center gap-2 shadow"
+  >
+    <Plus size={18} />
+    <span>إضافة عميل</span>
+  </Link>
+  <button
+  onClick={handleDeleteAll}
+  className="bg-red-600 hover:bg-red-700 text-white font-medium px-4 py-2 rounded-md flex items-center justify-center gap-2 shadow"
+>
+  <Trash size={18} />
+  <span>حذف الكل</span>
+</button>
+</div>
+
+
+<div className="relative w-full md:w-1/2 lg:w-1/3">
     <input
       type="text"
       placeholder="بحث باسم العميل..."
@@ -63,23 +128,10 @@ const Customers = () => {
       className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
     />
   </div>
-
-  {/* زر إضافة عميل */}
-  <Link
-    to="/customers/new"
-    className="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-md flex items-center justify-center gap-2 shadow"
-  >
-    <Plus size={18} />
-    <span>إضافة عميل</span>
-  </Link>
 </div>
 
-{loading ? (<div className="flex flex-col justify-center items-center space-y-4 w-full h-[55vh]">
-        <ClipLoader size={50} color="#016FB9" />
-        <p className="text-gray-600">جارٍ تحميل البيانات...</p>
-      </div>
 
-      ) :(<div className="overflow-x-auto shadow">
+      <div className="overflow-x-auto shadow">
   <table className="w-full text-sm border border-gray-200">
     <thead className="bg-gray-100 text-gray-700 text-center">
       <tr>
@@ -143,7 +195,7 @@ const Customers = () => {
       )}
     </tbody>
   </table>
-</div>)}
+</div>
 
     </div>
   );

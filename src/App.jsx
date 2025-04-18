@@ -1,99 +1,137 @@
-// src/App.jsx
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Customers from './pages/Customers';
-import CustomerDetails from './pages/CustomerDetails';
+import useSidebarStore from './store/sidebarStore';
 
-import Contracts from './pages/Contracts';
-import ContractDetails from './pages/ContractDetails'; // ← أو المسار الصحيح حسب مكان الملف
-import EditContract from './pages/EditContract';
-import AddContract from './pages/AddContract';
-
-import AddInvoice from './pages/AddInvoice';
-import Invoices from './pages/Invoices';
-import InvoiceDetails from './pages/InvoiceDetails';
-
-import Units from './pages/Units';
-import AddUnit from './pages/AddUnit';
-import UnitDetails from './pages/UnitDetails';
-import EditUnit from './pages/EditUnit';
-import Properties from './pages/Properties';
-import AddProperty from './pages/AddProperty';
-import PropertyDetails from './pages/PropertyDetails';
-import EditProperty from './pages/EditProperty';
-
-
-import Navbar from './components/Navbar';
-import EditInvoice from './pages/EditInvoice';
-import AddCustomer from './pages/AddCustomer';
-import EditCustomer from './pages/EditCustomer';
-import NotFound from './pages/NotFound';
-import Home from './pages/Home';
+import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
+import MobileNav from './components/MobileNav';
 
-
-import Register from './pages/Register';
+import Home from './pages/Home';
 import Login from './pages/Login';
-
+import Register from './pages/Register';
+import OAuthSuccess from './pages/OAuthSuccess';
+import NotFound from './pages/NotFound';
+import Unauthorized from './pages/Unauthorized';
 
 import Dashboard from './pages/Dashboard';
-import PrivateRoute from './components/PrivateRoute';
-import OAuthSuccess from './pages/OAuthSuccess';
-import AdminRoute from './components/AdminPrivateRoute';
-import RoleRoute from './routes/RoleRoute';
-import Unauthorized from './pages/Unauthorized';
 import Users from './pages/Users';
 import Profile from './pages/Profile';
 import EditProfile from './pages/EditProfile';
 
+import Customers from './pages/Customers';
+import AddCustomer from './pages/AddCustomer';
+import EditCustomer from './pages/EditCustomer';
+import CustomerDetails from './pages/CustomerDetails';
 
+import Contracts from './pages/Contracts';
+import AddContract from './pages/AddContract';
+import EditContract from './pages/EditContract';
+import ContractDetails from './pages/ContractDetails';
 
+import Invoices from './pages/Invoices';
+import AddInvoice from './pages/AddInvoice';
+import EditInvoice from './pages/EditInvoice';
+import InvoiceDetails from './pages/InvoiceDetails';
 
+import Units from './pages/Units';
+import AddUnit from './pages/AddUnit';
+import EditUnit from './pages/EditUnit';
+import UnitDetails from './pages/UnitDetails';
 
+import Properties from './pages/Properties';
+import AddProperty from './pages/AddProperty';
+import EditProperty from './pages/EditProperty';
+import PropertyDetails from './pages/PropertyDetails';
 
+import ProtectedRoute from './utils/ProtectedRoute';
+import Settings from './pages/Settings';
+import ThemeSettings from './pages/ThemeSettings';
+import Notifications from './pages/Notifications';
+import NotificationSettings from './pages/NotificationSettings';
 
 
 function App() {
-  return (<>
-    <Navbar/>
-    <Routes>
-    <Route path="*" element={<NotFound />} />
-    <Route path="/" element={<Home />} />
+  const { collapsed } = useSidebarStore();
 
-    <Route path="/unauthorized" element={<Unauthorized />} />
+  return (
+    <div className="flex min-h-screen">
+      <Sidebar />
 
-    <Route path="/register" element={<Register />} />
-    <Route path="/login" element={<Login />} />
-    <Route path="/oauth-success" element={<OAuthSuccess />} />
+      {/* Main Content */}
+      <div className={`flex-1 transition-all duration-300 ${collapsed ? 'xl:mr-16' : 'xl:mr-64'} `}>
+        <Routes>
+          {/* صفحات عامة */}
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/oauth-success" element={<OAuthSuccess />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
+          <Route path="*" element={<NotFound />} />
 
-    <Route path="/dashboard" element={<AdminRoute> <Dashboard /></AdminRoute>}/>
-    <Route path="/users" element={<RoleRoute allowedRoles={['admin']}><Users /></RoleRoute>} />
-    {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-    <Route path="/edit-profile" element={<EditProfile />} />
-    <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
-    <Route path="/customers" element={<PrivateRoute><Customers /></PrivateRoute>} />
-    <Route path="/customers/new" element={<PrivateRoute><AddCustomer /></PrivateRoute>} />
-    <Route path="/customers/edit/:id" element={<RoleRoute allowedRoles={['admin', 'broker']}><EditCustomer /></RoleRoute>} />
-    <Route path="/customers/:id" element={<PrivateRoute><CustomerDetails /></PrivateRoute>} />
-    <Route path="/contracts" element={<PrivateRoute><Contracts /></PrivateRoute>} />
-    <Route path="/contracts/:id" element={<PrivateRoute><ContractDetails /></PrivateRoute>} />
-    <Route path="/contracts/new" element={<PrivateRoute><AddContract /></PrivateRoute>} />
-    <Route path="/contracts/edit/:id" element={<PrivateRoute><EditContract/></PrivateRoute>} />
+          {/* صفحات للمستخدمين المسجلين */}
+          <Route element={<ProtectedRoute allowedRoles={["admin", "sales", "viewer", "accountant", "lawyer", "user"]} />}>
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/edit-profile" element={<EditProfile />} /> 
+            <Route path="/settings" element={<Settings />} /> 
+            <Route path="/settings/theme" element={<ThemeSettings />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/notification-settings" element={<NotificationSettings />} />
+          </Route>
 
-    <Route path="/invoices/contracts/:id" element={<PrivateRoute><InvoiceDetails /></PrivateRoute>} />
-    <Route path="/invoices" element={<PrivateRoute><Invoices /></PrivateRoute>} />
-    <Route path="/invoices/new" element={<PrivateRoute><AddInvoice /></PrivateRoute>} />
-    <Route path="/invoices/edit/:id" element={<PrivateRoute><EditInvoice /></PrivateRoute>} />
-    <Route path="/units" element={<PrivateRoute><Units /></PrivateRoute>} />
-    <Route path="/units/new" element={<PrivateRoute><AddUnit /></PrivateRoute>} />
-    <Route path="/units/edit/:id" element={<PrivateRoute><EditUnit /></PrivateRoute>} />
-    <Route path="/units/:id" element={<PrivateRoute><UnitDetails /></PrivateRoute>} />
-    <Route path="/properties" element={<PrivateRoute><Properties /></PrivateRoute>} />
-    <Route path="/properties/new" element={<PrivateRoute><AddProperty /></PrivateRoute>} />
-    <Route path="/properties/:id" element={<PrivateRoute><PropertyDetails /></PrivateRoute>} />
-    <Route path="/properties/edit/:id" element={<PrivateRoute><EditProperty /></PrivateRoute>} />
-    </Routes>
-    <Footer/>
-    </>
+          {/* Admin فقط */}
+          <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/users" element={<Users />} />
+          </Route>
+
+          {/* Admin, Sales, Viewer */}
+          <Route element={<ProtectedRoute allowedRoles={["admin", "sales", "viewer"]} />}>
+            <Route path="/customers" element={<Customers />} />
+            <Route path="/customers/new" element={<AddCustomer />} />
+            <Route path="/customers/:id" element={<CustomerDetails />} />
+            <Route path="/properties" element={<Properties />} />
+            <Route path="/properties/new" element={<AddProperty />} />
+            <Route path="/properties/:id" element={<PropertyDetails />} />
+            <Route path="/units" element={<Units />} />
+            <Route path="/units/new" element={<AddUnit />} />
+            <Route path="/units/:id" element={<UnitDetails />} />
+          </Route>
+
+          {/* Admin, Sales فقط */}
+          <Route element={<ProtectedRoute allowedRoles={["admin", "sales"]} />}>
+            <Route path="/customers/edit/:id" element={<EditCustomer />} />
+            <Route path="/units/edit/:id" element={<EditUnit />} />
+            <Route path="/properties/edit/:id" element={<EditProperty />} />
+          </Route>
+
+          {/* Admin, Lawyer, Viewer */}
+          <Route element={<ProtectedRoute allowedRoles={["admin", "lawyer", "viewer"]} />}>
+            <Route path="/contracts" element={<Contracts />} />
+            <Route path="/contracts/:id" element={<ContractDetails />} />
+          </Route>
+
+          {/* Admin, Lawyer فقط */}
+          <Route element={<ProtectedRoute allowedRoles={["admin", "lawyer"]} />}>
+            <Route path="/contracts/new" element={<AddContract />} />
+            <Route path="/contracts/edit/:id" element={<EditContract />} />
+          </Route>
+
+          {/* Admin, Accountant, Viewer */}
+          <Route element={<ProtectedRoute allowedRoles={["admin", "accountant", "viewer"]} />}>
+            <Route path="/invoices" element={<Invoices />} />
+            <Route path="/invoices/contracts/:id" element={<InvoiceDetails />} />
+          </Route>
+
+          {/* Admin, Accountant فقط */}
+          <Route element={<ProtectedRoute allowedRoles={["admin", "accountant"]} />}>
+            <Route path="/invoices/new" element={<AddInvoice />} />
+            <Route path="/invoices/edit/:id" element={<EditInvoice />} />
+          </Route>
+        </Routes>
+
+        <Footer />
+        <MobileNav />
+      </div>
+    </div>
   );
 }
 

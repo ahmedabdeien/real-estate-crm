@@ -1,0 +1,17 @@
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" fill="white" />
+  <g stroke="#d1d5db" stroke-width="0.5" fill="none">
+    <path d="M2 100 V80 H6 V100" />
+    <path d="M8 100 V75 H12 V100" />
+    <path d="M14 100 V70 H18 V100" />
+    <path d="M20 100 V78 H24 V100" />
+    <path d="M30 100 V65 H34 V100" />
+    <path d="M40 100 V85 H44 V100" />
+    <path d="M50 100 V60 H54 V100" />
+    <path d="M60 100 V70 H64 V100" />
+    <path d="M70 100 V80 H74 V100" />
+    <path d="M80 100 V75 H84 V100" />
+    <path d="M90 100 V60 H94 V100" />
+    <path d="M96 100 V72 H100 V100" />
+  </g>
+</svg>
