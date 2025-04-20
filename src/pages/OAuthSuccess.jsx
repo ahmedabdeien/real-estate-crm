@@ -14,8 +14,10 @@ const OAuthSuccess = () => {
     const name = query.get('name');
 
     if (token && name) {
-      const role = 'viewer';
-      const userId = 'oauth-user';
+      // ✅ استخراج بيانات المستخدم من التوكن
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const userId = payload.id;
+      const role = payload.role;
 
       // 🟢 تخزين في Zustand
       login({ token, name, role, userId });
@@ -32,9 +34,14 @@ const OAuthSuccess = () => {
         userId,
       });
 
-      // 🧭 توجيه المستخدم
+      // 🧭 توجيه المستخدم حسب الدور
       setTimeout(() => {
-        navigate('/contracts');
+        if (role === 'admin') navigate('/dashboard');
+        else if (role === 'sales') navigate('/customers');
+        else if (role === 'accountant') navigate('/invoices');
+        else if (role === 'lawyer') navigate('/contracts');
+        else if (role === 'viewer') navigate('/contracts');
+        else navigate('/');
       }, 1000);
     } else {
       navigate('/login');
