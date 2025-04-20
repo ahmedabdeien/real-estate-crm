@@ -6,7 +6,7 @@ const ThemeSettings = () => {
   const { theme, toggleTheme } = useThemeStore();
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white dark:bg-gray-900 shadow rounded-md" dir="rtl">
+    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white dark:bg-gray-900  rounded-md" dir="rtl">
       <h2 className="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">
         إعدادات المظهر
       </h2>

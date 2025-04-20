@@ -12,7 +12,7 @@ const AddProperty = () => {
     location: '',
     description: ''
   });
-  const { success, error } = useSweetAlert();
+  const { error,toastSuccess, toastError  } = useSweetAlert();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -29,11 +29,11 @@ const AddProperty = () => {
     setIsSubmitting(true);
     try {
       await axios.post('/properties', formData);
-      success('تمت إضافة العقار بنجاح!');
+      toastSuccess('تمت إضافة العقار بنجاح!');
       navigate('/properties');
     } catch (err) {
       console.error('خطأ في حفظ العقار:', err);
-      error('حدث خطأ أثناء الإضافة');
+      toastError('حدث خطأ أثناء الإضافة');
       setIsSubmitting(false);
     }
   };

@@ -1,16 +1,18 @@
-// ✅ AddContract.jsx بتصميم موحد
+// ✅ AddContract.jsx بعد التحويل لاستخدام SweetAlert2
 import React, { useEffect, useState } from 'react';
 import axios from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import useSweetAlert from '../utils/useSweetAlert';
 
 const AddContract = () => {
   const navigate = useNavigate();
+  const { success, error, confirm } = useSweetAlert();
   const [customers, setCustomers] = useState([]);
   const [units, setUnits] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toastSuccess, toastError } = useSweetAlert();
+
 
   const [formData, setFormData] = useState({
     customer: '',
@@ -44,7 +46,7 @@ const AddContract = () => {
     e.preventDefault();
 
     if (!formData.customer || !formData.unit || !formData.price || !formData.startDate || !formData.endDate) {
-      toast.error('يرجى ملء جميع الحقول المطلوبة');
+      error('يرجى ملء جميع الحقول المطلوبة');
       return;
     }
 
@@ -52,20 +54,23 @@ const AddContract = () => {
 
     try {
       await axios.post('/contracts', formData);
-      toast.success('تم إضافة العقد بنجاح');
+      toastSuccess('تم إضافة العقد بنجاح');
       navigate('/contracts');
     } catch (err) {
-      console.error('فشل في إضافة العقد', err);
-      toast.error('حدث خطأ أثناء الإضافة');
+      toastError('حدث خطأ أثناء الإضافة',err);
       setIsSubmitting(false);
     }
   };
 
   const handleCancel = () => {
     if (Object.values(formData).some((v) => v)) {
-      if (window.confirm('هل أنت متأكد من إلغاء إدخال العقد؟')) {
-        navigate('/contracts');
-      }
+      confirm({
+        title: 'هل أنت متأكد؟',
+        text: 'سيتم إلغاء البيانات المدخلة',
+        confirmText: 'نعم، إلغاء',
+        cancelText: 'تراجع',
+        onConfirm: () => navigate('/contracts'),
+      });
     } else {
       navigate('/contracts');
     }

@@ -6,7 +6,7 @@ import useSweetAlert from '../utils/useSweetAlert';
 
 const AddUnit = () => {
   const navigate = useNavigate();
-  const { success, error } = useSweetAlert();
+  const { error,toastSuccess, toastError } = useSweetAlert();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [properties, setProperties] = useState([]);
   const [formData, setFormData] = useState({
@@ -45,23 +45,18 @@ const AddUnit = () => {
     setIsSubmitting(true);
     try {
       await axios.post('/units', formData);
-      success('تمت إضافة الوحدة بنجاح!');
+      toastSuccess('تمت إضافة الوحدة بنجاح!');
       navigate('/units');
     } catch (err) {
       console.error('خطأ في حفظ الوحدة:', err);
-      error('حدث خطأ أثناء الإضافة');
+      toastError('حدث خطأ أثناء الإضافة');
       setIsSubmitting(false);
     }
   };
 
   const handleCancel = () => {
-    if (Object.values(formData).some((v) => v)) {
-      if (window.confirm('هل أنت متأكد من إلغاء إدخال الوحدة؟')) {
-        navigate('/units');
-      }
-    } else {
       navigate('/units');
-    }
+    
   };
 
   return (

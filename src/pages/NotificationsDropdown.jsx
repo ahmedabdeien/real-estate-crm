@@ -4,7 +4,7 @@ import axios from '../api/axios';
 import { Bell, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const NotificationsDropdown = () => {
+const NotificationsDropdown = ({ forceOpen = false, hideButton = false }) => {
   const [notifications, setNotifications] = useState([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -56,21 +56,24 @@ const NotificationsDropdown = () => {
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <button
-        onClick={() => setOpen(prev => !prev)}
-        className="relative text-gray-600 hover:text-blue-600"
-        title="الإشعارات"
-      >
-        <Bell size={22} />
-        {notifications.some(n => !n.isRead) && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
-            {notifications.filter(n => !n.isRead).length}
-          </span>
-        )}
-      </button>
+      {!hideButton && (
+  <button
+    onClick={() => setOpen(prev => !prev)}
+    className="relative text-gray-600 hover:text-blue-600"
+    title="الإشعارات"
+  >
+    <Bell size={22} />
+    {notifications.some(n => !n.isRead) && (
+      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
+        {notifications.filter(n => !n.isRead).length}
+      </span>
+    )}
+  </button>
+)}
 
-      {open && (
-        <div className="absolute z-50 right-0 mt-2 w-96 bg-white border shadow-lg rounded-lg max-h-96 overflow-auto">
+
+      {(open || forceOpen) && (
+        <div className="absolute z-50 right-0 bottom-10 mt-2 w-96 bg-white border shadow-lg rounded-lg max-h-96 overflow-auto">
           <div className="px-4 py-3 border-b font-bold text-blue-700 flex justify-between items-center">
             الإشعارات
             <button
@@ -110,8 +113,20 @@ const NotificationsDropdown = () => {
               ))}
             </ul>
           )}
+           <div className="text-center border-t text-sm text-blue-600 hover:bg-gray-50 transition">
+      <button
+        className="w-full py-2"
+        onClick={() => {
+          setOpen(false);
+          navigate('/notifications');
+        }}
+      >
+        عرض كل الإشعارات
+      </button>
+    </div>
         </div>
       )}
+      
     </div>
   );
 };

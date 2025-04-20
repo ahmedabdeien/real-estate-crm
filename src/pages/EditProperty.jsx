@@ -8,7 +8,7 @@ import useSweetAlert from '../utils/useSweetAlert';
 const EditProperty = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { success, error } = useSweetAlert();
+  const { error ,toastSuccess, toastError} = useSweetAlert();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -49,11 +49,11 @@ const EditProperty = () => {
     setIsSubmitting(true);
     try {
       await axios.put(`/properties/${id}`, formData);
-      success('تم تعديل العقار بنجاح!');
+      toastSuccess('تم تعديل العقار بنجاح!');
       navigate('/properties');
     } catch (err) {
       console.error('خطأ في تعديل العقار:', err);
-      error('حدث خطأ أثناء حفظ التعديلات');
+      toastError('حدث خطأ أثناء حفظ التعديلات');
       setIsSubmitting(false);
     }
   };

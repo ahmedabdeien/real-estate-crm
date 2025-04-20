@@ -8,7 +8,7 @@ import useSweetAlert from '../utils/useSweetAlert';
 const EditUnit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { success, error } = useSweetAlert();
+  const { error,toastSuccess, toastError } = useSweetAlert();
 
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -66,11 +66,11 @@ const EditUnit = () => {
     setIsSubmitting(true);
     try {
       await axios.put(`/units/${id}`, formData);
-      success('تم تعديل الوحدة بنجاح!');
+      toastSuccess('تم تعديل الوحدة بنجاح!');
       navigate('/units');
     } catch (err) {
       console.error('خطأ في تعديل الوحدة', err);
-      error('فشل في حفظ التعديلات');
+      toastError('فشل في حفظ التعديلات');
       setIsSubmitting(false);
     }
   };

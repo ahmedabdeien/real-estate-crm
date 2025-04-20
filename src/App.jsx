@@ -48,16 +48,21 @@ import ThemeSettings from './pages/ThemeSettings';
 import Notifications from './pages/Notifications';
 import NotificationSettings from './pages/NotificationSettings';
 
+import AIChatWidget from './components/AIChatWidget';
+
+
 
 function App() {
   const { collapsed } = useSidebarStore();
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex w-full ">
       <Sidebar />
 
       {/* Main Content */}
-      <div className={`flex-1 transition-all duration-300 ${collapsed ? 'xl:mr-16' : 'xl:mr-64'} `}>
+      <div className={`flex-1 transition-all duration-300 ${collapsed ? 'xl:mr-16' : 'xl:mr-64'} `}
+      style={{ overflowX: 'hidden' }}>
+        <div className="max-w-full overflow-x-hidden">
         <Routes>
           {/* صفحات عامة */}
           <Route path="/" element={<Home />} />
@@ -127,9 +132,11 @@ function App() {
             <Route path="/invoices/edit/:id" element={<EditInvoice />} />
           </Route>
         </Routes>
-
+        <AIChatWidget /> 
         <Footer />
         <MobileNav />
+
+        </div>
       </div>
     </div>
   );

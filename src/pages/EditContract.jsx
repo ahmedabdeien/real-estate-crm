@@ -8,12 +8,13 @@ import useSweetAlert from '../utils/useSweetAlert';
 const EditContract = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { success, error } = useSweetAlert();
+  const { error } = useSweetAlert();
 
   const [customers, setCustomers] = useState([]);
   const [units, setUnits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toastSuccess, toastError } = useSweetAlert();
 
   const [formData, setFormData] = useState({
     type: 'بيع',
@@ -65,11 +66,11 @@ const EditContract = () => {
     setIsSubmitting(true);
     try {
       await axios.put(`/contracts/${id}`, formData);
-      success('تم تعديل العقد بنجاح!');
+      toastSuccess('تم تعديل العقد بنجاح!');
       navigate('/contracts');
     } catch (err) {
       console.error('خطأ في تعديل العقد', err);
-      error('فشل في حفظ التعديلات');
+      toastError('فشل في حفظ التعديلات');
       setIsSubmitting(false);
     }
   };

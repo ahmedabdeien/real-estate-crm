@@ -9,7 +9,7 @@ import { User, Phone, Mail, StickyNote } from 'lucide-react';
 
 const AddCustomer = () => {
   const navigate = useNavigate();
-  const { success, error } = useSweetAlert();
+  const { toastSuccess, toastError } = useSweetAlert();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
@@ -28,10 +28,11 @@ const AddCustomer = () => {
     setIsSubmitting(true);
     try {
       await axios.post('/customers', formData);
-      success('تم إضافة العميل بنجاح', () => navigate('/customers'));
+      toastSuccess('تم إضافة العميل بنجاح');
+      navigate('/customers');
     } catch (err) {
       console.error('خطأ أثناء الإضافة:', err);
-      error('فشل في إضافة العميل', 'يرجى التحقق من البيانات أو المحاولة لاحقًا');
+      toastError('فشل في إضافة العميل', 'يرجى التحقق من البيانات أو المحاولة لاحقًا');
       setIsSubmitting(false);
     }
   };

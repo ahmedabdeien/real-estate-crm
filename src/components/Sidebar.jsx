@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Home, LayoutDashboard, Users, FileText, Building2, Receipt, Shield,
@@ -22,7 +22,6 @@ const navItems = [
   { to: '/contracts', label: 'العقود', icon: <FileText size={20} />, roles: ['admin', 'lawyer', 'viewer'] },
   { to: '/invoices', label: 'الفواتير', icon: <Receipt size={20} />, roles: ['admin', 'accountant', 'viewer'] },
   { to: '/users', label: 'المستخدمين', icon: <Shield size={20} />, roles: ['admin'] },
-  { to: '/notifications', label: 'الإشعارات', icon: <Bell size={20} />, roles: ['admin', 'sales', 'viewer', 'lawyer', 'accountant', 'user'] },
   { to: '/settings', label: 'إعدادات', icon: <Settings size={20} />, roles: ['admin', 'sales', 'viewer', 'lawyer', 'accountant', 'user'] },
 
 ];
@@ -34,6 +33,7 @@ const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const isDark = theme === 'dark';
+  const [notifOpen, setNotifOpen] = useState(false);
 
   // Load saved sidebar state from localStorage
   useEffect(() => {
@@ -99,12 +99,12 @@ const Sidebar = () => {
           <img 
             src={logo} 
             alt="شعار النظام" 
-            className={`transition-all duration-300 w-32`} 
+            className={`transition-all duration-300 w-28`} 
           />
          
           
           }
- <NotificationsDropdown />
+
 
           <button 
             onClick={toggleSidebar} 
@@ -113,10 +113,12 @@ const Sidebar = () => {
           >
             {collapsed ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
           </button>
+          
         </div>
+        
 
         {/* Navigation Menu */}
-        <nav className="flex flex-col gap-1 p-2 overflow-y-auto" aria-label="القائمة الرئيسية">
+        <nav className="flex flex-col gap-1 p-2 " aria-label="القائمة الرئيسية">
           {navItems
             .filter(item => item.roles.includes(role))
             .map(({ to, label, icon }) => (
@@ -129,15 +131,38 @@ const Sidebar = () => {
               />
             ))
           }
+{['admin', 'sales', 'viewer', 'lawyer', 'accountant', 'user'].includes(role) && (
+  <div
+    onClick={() => setNotifOpen(prev => !prev)}
+    className={`relative px-3 py-2.5 rounded-md transition-all cursor-pointer 
+      ${collapsed ? 'flex justify-center' : 'flex items-center gap-2'} 
+      hover:bg-gray-100 dark:hover:bg-gray-800`}
+  >
+    <Bell size={20} />
+    {!collapsed && <span className="truncate text-sm">الإشعارات</span>}
+
+    {/* القائمة المنسدلة هنا */} 
+    {notifOpen && (
+      <div className="absolute right-0 top-full z-50 w-[320px]">
+        <NotificationsDropdown forceOpen hideButton />
+      </div>
+    )}
+  </div>
+)}
+
+
         </nav>
       </div>
 
       {/* Footer with user info and actions */}
-      <div className="flex-shrink-0 mt-auto p-3 border-t border-gray-200 dark:border-gray-800">
+      <div className="mt-auto p-3 border-t border-gray-200 dark:border-gray-800 overflow-auto">
         {/* User Profile Section */}
-        <div className={`flex items-center gap-2 mb-3 p-2 rounded-md ${
-          isDark ? 'bg-gray-800' : 'bg-gray-100'
-        } ${collapsed ? 'justify-center' : ''}`}>
+        <Link 
+            to="/profile" 
+            className={`flex items-center  mb-1  rounded-md text-sm hover:bg-gray-100 dark:hover:bg-gray-800 ${collapsed ? 'justify-center' : ''}`}
+            title={collapsed ? "الملف الشخصي" : ""}
+          >
+        <div className={`flex items-center gap-2  p-2 rounded-md ${collapsed ? 'justify-center' : ''}`}>
           <UserCircle size={collapsed ? 24 : 20} className="text-blue-600 dark:text-blue-400" />
           {!collapsed && (
             <div className="overflow-hidden">
@@ -146,26 +171,10 @@ const Sidebar = () => {
             </div>
           )}
         </div>
+        </Link>
 
         {/* Action Buttons */}
         <div className="flex flex-col gap-1">
-          <Link 
-            to="/profile" 
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm hover:bg-gray-100 dark:hover:bg-gray-800 ${collapsed ? 'justify-center' : ''}`}
-            title={collapsed ? "الملف الشخصي" : ""}
-          >
-            <UserCircle size={18} />
-            {!collapsed && <span>الملف الشخصي</span>}
-          </Link>
-
-          <Link 
-            to="/edit-profile" 
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm hover:bg-gray-100 dark:hover:bg-gray-800 ${collapsed ? 'justify-center' : ''}`}
-            title={collapsed ? "تعديل البيانات" : ""}
-          >
-            <Settings size={18} />
-            {!collapsed && <span>تعديل البيانات</span>}
-          </Link>
 
           <ActionButton
             onClick={toggleTheme}
@@ -177,7 +186,7 @@ const Sidebar = () => {
             onClick={handleLogout}
             icon={<LogOut size={18} />}
             label="تسجيل الخروج"
-            className="text-red-500 hover:text-red-600 mt-1"
+            className="text-red-500 hover:text-red-600 "
           />
         </div>
       </div>

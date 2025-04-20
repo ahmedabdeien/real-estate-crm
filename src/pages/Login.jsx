@@ -5,7 +5,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { googleLoginURL, facebookLoginURL } from '../utils/oauthLinks';
 import useAuthStore from '../store/useAuthStore';
 import { LogIn, Mail, Lock, Facebook, Globe , UserPlus, ShieldCheck } from 'lucide-react';
-
+import { EncryptStorage } from 'encrypt-storage';
 const Login = () => {
   const { login } = useAuthStore();
   const navigate = useNavigate();
@@ -21,9 +21,22 @@ const Login = () => {
     try {
       const res = await axios.post('/auth/login', formData);
       const { token, userId, name, role } = res.data;
+  
       login({ token, name, role, userId });
+  
+      // ✅ إضافة التوكن إلى التخزين الآمن
+      const encryptStorage = new EncryptStorage('🔒secret-key-123', {
+        storageType: 'localStorage',
+      });
+      encryptStorage.setItem('auth-storage', {
+        token,
+        name,
+        role,
+        userId,
+      });
+  
       setMessage('✅ تسجيل الدخول ناجح');
-
+  
       if (role === 'admin') navigate('/dashboard');
       else if (role === 'sales') navigate('/customers');
       else if (role === 'accountant') navigate('/invoices');
@@ -34,7 +47,7 @@ const Login = () => {
       setMessage(err.response?.data?.msg || '❌ فشل في تسجيل الدخول');
     }
   };
-
+  
   return (
     <div className="max-w-xl mx-auto mt-10 p-6 bg-white shadow-md border rounded-md text-right animate-fade-in" dir="rtl">
       <h2 className="text-2xl font-bold mb-4 text-center text-blue-700 flex items-center justify-center gap-2">

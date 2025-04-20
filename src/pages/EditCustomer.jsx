@@ -8,7 +8,7 @@ import useSweetAlert from '../utils/useSweetAlert';
 const EditCustomer = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { success, error } = useSweetAlert();
+  const { error,toastSuccess, toastError } = useSweetAlert();
 
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -50,11 +50,11 @@ const EditCustomer = () => {
     setIsSubmitting(true);
     try {
       await axios.put(`/customers/${id}`, formData);
-      success('تم تعديل بيانات العميل بنجاح');
+      toastSuccess('تم تعديل بيانات العميل بنجاح');
       navigate('/customers');
     } catch (err) {
       console.error('فشل في تعديل البيانات:', err);
-      error('حدث خطأ أثناء حفظ التعديلات');
+      toastError('حدث خطأ أثناء حفظ التعديلات');
       setIsSubmitting(false);
     }
   };

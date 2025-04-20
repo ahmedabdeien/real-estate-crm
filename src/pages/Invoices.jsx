@@ -1,13 +1,17 @@
+// ✅ Invoices.jsx بعد تفعيل SweetAlert2
 import React, { useEffect, useState } from 'react';
 import axios from '../api/axios';
 import { Link } from 'react-router-dom';
 import { Eye, Trash, Pencil, Plus, Search, FileText } from 'lucide-react';
 import { ClipLoader } from 'react-spinners';
 import Breadcrumb from '../components/Breadcrumb';
+import useSweetAlert from '../utils/useSweetAlert';
+
 const Invoices = () => {
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const { confirm, success, error } = useSweetAlert();
 
   useEffect(() => {
     const fetchInvoices = async () => {
@@ -25,13 +29,22 @@ const Invoices = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    if (!window.confirm('هل أنت متأكد من حذف الفاتورة؟')) return;
-    try {
-      await axios.delete(`/invoices/${id}`);
-      setInvoices((prev) => prev.filter((i) => i._id !== id));
-    } catch (err) {
-      console.error('فشل في حذف الفاتورة', err);
-    }
+    confirm({
+      title: 'هل أنت متأكد من حذف الفاتورة؟',
+      text: 'لن تتمكن من استرجاعها لاحقًا!',
+      confirmText: 'نعم، احذف',
+      cancelText: 'إلغاء',
+      onConfirm: async () => {
+        try {
+          await axios.delete(`/invoices/${id}`);
+          setInvoices((prev) => prev.filter((i) => i._id !== id));
+          success('تم حذف الفاتورة بنجاح');
+        } catch (err) {
+          console.error('فشل في حذف الفاتورة', err);
+          error('حدث خطأ أثناء حذف الفاتورة');
+        }
+      },
+    });
   };
 
   const filtered = invoices.filter(
@@ -121,7 +134,7 @@ const Invoices = () => {
                       <Eye size={18} />
                       <span className="hidden sm:inline text-xs">تفاصيل</span>
                     </Link>
-      
+
                     <Link
                       to={`/invoices/edit/${inv._id}`}
                       title="تعديل"
@@ -130,7 +143,7 @@ const Invoices = () => {
                       <Pencil size={18} />
                       <span className="hidden sm:inline text-xs">تعديل</span>
                     </Link>
-      
+
                     <button
                       onClick={() => handleDelete(inv._id)}
                       className="flex items-center gap-1 text-red-600 hover:text-red-800"
@@ -153,7 +166,6 @@ const Invoices = () => {
           </tbody>
         </table>
       </div>
-      
       )}
     </div>
   );

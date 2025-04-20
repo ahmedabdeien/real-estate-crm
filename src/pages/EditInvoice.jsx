@@ -8,7 +8,7 @@ import useSweetAlert from '../utils/useSweetAlert';
 const EditInvoice = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { success, error } = useSweetAlert();
+  const { error,toastSuccess, toastError } = useSweetAlert();
 
   const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -51,11 +51,11 @@ const EditInvoice = () => {
     setIsSubmitting(true);
     try {
       await axios.put(`/invoices/${id}`, formData);
-      success('تم تعديل الفاتورة بنجاح!');
+      toastSuccess('تم تعديل الفاتورة بنجاح!');
       navigate('/invoices');
     } catch (err) {
       console.error('خطأ في تعديل الفاتورة:', err);
-      error('حدث خطأ أثناء حفظ التعديلات');
+      toastError('حدث خطأ أثناء حفظ التعديلات');
       setIsSubmitting(false);
     }
   };

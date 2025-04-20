@@ -2,6 +2,9 @@
 import { useState } from 'react';
 import ThemeSettings from './ThemeSettings';
 import { Sun, Bell, Globe, UserCog } from 'lucide-react';
+import EditProfile from './EditProfile';
+import NotificationSettings from './NotificationSettings';
+ 
 
 const tabs = [
   { id: 'theme', label: 'المظهر', icon: <Sun size={16} /> },
@@ -18,11 +21,11 @@ const Settings = () => {
       case 'theme':
         return <ThemeSettings />;
       case 'notifications':
-        return <div className="text-gray-500 dark:text-gray-300">🚧 إعدادات الإشعارات قيد التطوير</div>;
+        return <NotificationSettings/>;
       case 'language':
         return <div className="text-gray-500 dark:text-gray-300">🌐 إعدادات اللغة قيد التطوير</div>;
       case 'account':
-        return <div className="text-gray-500 dark:text-gray-300">👤 إعدادات الحساب قيد التطوير</div>;
+        return <EditProfile />;
       default:
         return null;
     }

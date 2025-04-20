@@ -1,13 +1,17 @@
+// ✅ Units.jsx بعد التحويل لاستخدام SweetAlert2
 import React, { useEffect, useState } from 'react';
 import axios from '../api/axios';
 import { Link } from 'react-router-dom';
 import { Eye, Trash, Plus, Search, Pencil, Building2 } from 'lucide-react';
 import { ClipLoader } from 'react-spinners';
 import Breadcrumb from '../components/Breadcrumb';
+import useSweetAlert from '../utils/useSweetAlert';
+
 const Units = () => {
   const [units, setUnits] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const { success, error, confirm } = useSweetAlert();
 
   useEffect(() => {
     const fetchUnits = async () => {
@@ -24,13 +28,22 @@ const Units = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    if (!window.confirm('هل أنت متأكد من حذف هذه الوحدة؟')) return;
-    try {
-      await axios.delete(`/units/${id}`);
-      setUnits((prev) => prev.filter((u) => u._id !== id));
-    } catch (err) {
-      console.error('خطأ في حذف الوحدة', err);
-    }
+    confirm({
+      title: 'هل أنت متأكد من حذف هذه الوحدة؟',
+      text: 'لن تتمكن من التراجع بعد الحذف!',
+      confirmText: 'نعم، احذف',
+      cancelText: 'إلغاء',
+      onConfirm: async () => {
+        try {
+          await axios.delete(`/units/${id}`);
+          setUnits((prev) => prev.filter((u) => u._id !== id));
+          success('تم حذف الوحدة بنجاح');
+        } catch (err) {
+          console.error('خطأ في حذف الوحدة', err);
+          error('حدث خطأ أثناء الحذف');
+        }
+      },
+    });
   };
 
   const filtered = units.filter((u) =>
@@ -42,7 +55,6 @@ const Units = () => {
   return (
     <div className="pt-4 p-6">
          <Breadcrumb />
-
 
 {/* العنوان */}
 <div className="mb-6 p-4 bg-blue-50 border border-blue-200 text-blue-800 rounded-lg shadow-sm">
@@ -107,7 +119,6 @@ const Units = () => {
                 <td className="border px-3 py-2">{u.type}</td>
                 <td className="border px-3 py-2">{u.area} م²</td>
                 <td className="border px-3 py-2">{u.price?.toLocaleString()} ج.م</td>
-      
                 {/* الحالة */}
                 <td className="border px-3 py-2">
                   <span
@@ -122,10 +133,10 @@ const Units = () => {
                     {u.status}
                   </span>
                 </td>
-      
+
                 {/* العقار */}
                 <td className="border px-3 py-2">{u.property?.name || '—'}</td>
-      
+
                 {/* التحكم */}
                 <td className="border px-3 py-2">
                   <div className="flex justify-center flex-wrap gap-2 rtl:flex-row-reverse">
@@ -137,7 +148,7 @@ const Units = () => {
                       <Eye size={18} />
                       <span className="hidden sm:inline text-xs">تفاصيل</span>
                     </Link>
-      
+
                     <Link
                       to={`/units/edit/${u._id}`}
                       className="flex items-center gap-1 text-yellow-600 hover:text-yellow-800"
@@ -146,7 +157,7 @@ const Units = () => {
                       <Pencil size={18} />
                       <span className="hidden sm:inline text-xs">تعديل</span>
                     </Link>
-      
+
                     <button
                       onClick={() => handleDelete(u._id)}
                       className="flex items-center gap-1 text-red-600 hover:text-red-800"
@@ -162,7 +173,7 @@ const Units = () => {
           </tbody>
         </table>
       </div>
-      
+
       )}
     </div>
   );

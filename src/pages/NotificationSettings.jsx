@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import useNotificationSettings from '../store/useNotificationSettings';
 import axios from '../api/axios';
 import { Save, Bell } from 'lucide-react';
+import { ClipLoader } from 'react-spinners';
 
 const notificationOptions = [
   { key: 'contractCreated', label: 'عند إضافة عقد جديد' },
@@ -42,7 +43,7 @@ const NotificationSettings = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white rounded shadow-md mt-6" dir="rtl">
+    <div className="max-w-lg mx-auto p-6  mt-6" dir="rtl">
       <h2 className="text-xl font-bold text-blue-700 flex items-center gap-2 mb-4">
         <Bell size={20} />
         إعدادات الإشعارات
@@ -51,8 +52,10 @@ const NotificationSettings = () => {
       {message && <p className="mb-4 text-sm text-center text-gray-600">{message}</p>}
 
       {loading ? (
-        <p className="text-gray-500">جاري التحميل...</p>
-      ) : (
+        <div className="flex flex-col justify-center items-center space-y-4 w-full h-[40vh]">
+        <ClipLoader size={50} color="#016FB9" />
+        <p className="text-gray-600">جارٍ تحميل البيانات...</p>
+      </div>      ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           {notificationOptions.map(({ key, label }) => (
             <label key={key} className="flex items-center gap-3 text-sm">

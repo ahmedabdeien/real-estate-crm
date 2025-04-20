@@ -15,7 +15,7 @@ const AddInvoice = () => {
     status: 'غير مدفوعة',
     notes: ''
   });
-  const { success, error } = useSweetAlert();
+  const { error,toastSuccess, toastError  } = useSweetAlert();
 
   useEffect(() => {
     const fetchContracts = async () => {
@@ -44,11 +44,11 @@ const AddInvoice = () => {
     setIsSubmitting(true);
     try {
       await axios.post('/invoices', formData);
-      success('تمت إضافة الفاتورة بنجاح!');
+      toastSuccess('تمت إضافة الفاتورة بنجاح!');
       navigate('/invoices');
     } catch (err) {
       console.error('خطأ في حفظ الفاتورة:', err);
-      error('حدث خطأ أثناء الإضافة');
+      toastError('حدث خطأ أثناء الإضافة');
       setIsSubmitting(false);
     }
   };
