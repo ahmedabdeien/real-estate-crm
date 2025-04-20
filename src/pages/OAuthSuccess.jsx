@@ -14,10 +14,10 @@ const OAuthSuccess = () => {
     const name = query.get('name');
 
     if (token && name) {
-      // ✅ استخراج بيانات المستخدم من التوكن
+      // ✅ استخراج userId و role من JWT
       const payload = JSON.parse(atob(token.split('.')[1]));
       const userId = payload.id;
-      const role = payload.role;
+      const role = payload.role || 'user';
 
       // 🟢 تخزين في Zustand
       login({ token, name, role, userId });
