@@ -1,9 +1,7 @@
-// src/pages/OAuthSuccess.jsx
-// Temporary update to trigger redeploy
-
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import useAuthStore from '../store/useAuthStore';
+import { EncryptStorage } from 'encrypt-storage';
 
 const OAuthSuccess = () => {
   const navigate = useNavigate();
@@ -16,17 +14,27 @@ const OAuthSuccess = () => {
     const name = query.get('name');
 
     if (token && name) {
-      // 🟢 تسجيل دخول بـ بيانات افتراضية (لأن OAuth مش بيرجع role أو userId)
-      login({
-        token,
-        name,
-        role: 'viewer',   // 🔐 أو 'user' لو ده الدور الافتراضي عندك
-        userId: 'oauth-user',
+      const role = 'viewer';
+      const userId = 'oauth-user';
+
+      // 🟢 تخزين في Zustand
+      login({ token, name, role, userId });
+
+      // 🔐 تخزين في localStorage المشفر
+      const encryptStorage = new EncryptStorage('🔒secret-key-123', {
+        storageType: 'localStorage',
       });
 
-      // 🧭 توجيه المستخدم حسب الدور (ممكن تعدلها لاحقًا)
+      encryptStorage.setItem('auth-storage', {
+        token,
+        name,
+        role,
+        userId,
+      });
+
+      // 🧭 توجيه المستخدم
       setTimeout(() => {
-        navigate('/contracts'); // viewer ممكن يروح على العقود مثلًا
+        navigate('/contracts');
       }, 1000);
     } else {
       navigate('/login');
