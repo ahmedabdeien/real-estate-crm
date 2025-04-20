@@ -1,4 +1,6 @@
 // src/pages/OAuthSuccess.jsx
+// Temporary update to trigger redeploy
+
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import useAuthStore from '../store/useAuthStore';
