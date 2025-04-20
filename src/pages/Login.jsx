@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import axios from '../api/axios';
 import { useNavigate, Link } from 'react-router-dom';
-import { googleLoginURL, facebookLoginURL } from '../utils/oauthLinks';
+import { googleLoginURL } from '../utils/oauthLinks';
 import useAuthStore from '../store/useAuthStore';
 import { LogIn, Mail, Lock, Facebook, Globe , UserPlus, ShieldCheck } from 'lucide-react';
 import { EncryptStorage } from 'encrypt-storage';
@@ -42,6 +42,7 @@ const Login = () => {
       else if (role === 'accountant') navigate('/invoices');
       else if (role === 'lawyer') navigate('/contracts');
       else if (role === 'viewer') navigate('/contracts');
+
       else navigate('/');
     } catch (err) {
       setMessage(err.response?.data?.msg || '❌ فشل في تسجيل الدخول');
@@ -100,12 +101,6 @@ const Login = () => {
         <Globe  size={18} /> تسجيل الدخول باستخدام Google
       </button>
 
-      <button
-        onClick={() => window.location.href = facebookLoginURL}
-        className="bg-blue-700 text-white py-2 px-4 rounded w-full mt-2 hover:bg-blue-800 transition flex items-center justify-center gap-2"
-      >
-        <Facebook size={18} /> تسجيل الدخول باستخدام Facebook
-      </button>
 
       <div className="text-center text-sm mt-6">
         <span>ليس لديك حساب؟ </span>
