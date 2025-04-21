@@ -50,6 +50,8 @@ import NotificationSettings from './pages/NotificationSettings';
 
 import AIChatWidget from './components/AIChatWidget';
 import VerifyEmail from './pages/VerifyEmail';
+import VerifyCode from './pages/VerifyCode';
+import ResendCode from './pages/ResendCode';
 
 
 
@@ -71,7 +73,9 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/oauth-success" element={<OAuthSuccess />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
-          <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/verify-code" element={<VerifyEmail />} />
+          <Route path="/resend-code" element={<ResendCode />} />
+          <Route path="/verify-email" element={<VerifyCode />} />
           <Route path="*" element={<NotFound />} />
 
           {/* صفحات للمستخدمين المسجلين */}

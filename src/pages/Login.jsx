@@ -4,13 +4,15 @@ import axios from '../api/axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { googleLoginURL } from '../utils/oauthLinks';
 import useAuthStore from '../store/useAuthStore';
-import { LogIn, Mail, Lock, Facebook, Globe , UserPlus, ShieldCheck } from 'lucide-react';
+import { LogIn, Mail, Lock, Globe, UserPlus, ShieldCheck } from 'lucide-react';
 import { EncryptStorage } from 'encrypt-storage';
+
 const Login = () => {
   const { login } = useAuthStore();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
+  const [warning, setWarning] = useState('');
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -18,13 +20,14 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage('');
+    setWarning('');
     try {
       const res = await axios.post('/auth/login', formData);
       const { token, userId, name, role } = res.data;
-  
+
       login({ token, name, role, userId });
-  
-      // ✅ إضافة التوكن إلى التخزين الآمن
+
       const encryptStorage = new EncryptStorage('🔒secret-key-123', {
         storageType: 'localStorage',
       });
@@ -34,28 +37,38 @@ const Login = () => {
         role,
         userId,
       });
-  
+
       setMessage('✅ تسجيل الدخول ناجح');
-  
+
       if (role === 'admin') navigate('/dashboard');
       else if (role === 'sales') navigate('/customers');
       else if (role === 'accountant') navigate('/invoices');
       else if (role === 'lawyer') navigate('/contracts');
       else if (role === 'viewer') navigate('/contracts');
-
       else navigate('/');
     } catch (err) {
-      setMessage(err.response?.data?.msg || '❌ فشل في تسجيل الدخول');
+      const msg = err.response?.data?.msg || '❌ فشل في تسجيل الدخول';
+      if (msg.includes('تفعيل حسابك')) {
+        setWarning(msg);
+      } else {
+        setMessage(msg);
+      }
     }
   };
-  
+
   return (
     <div className="max-w-xl mx-auto mt-10 p-6 bg-white shadow-md border rounded-md text-right animate-fade-in" dir="rtl">
       <h2 className="text-2xl font-bold mb-4 text-center text-blue-700 flex items-center justify-center gap-2">
         <ShieldCheck size={24} /> تسجيل الدخول
       </h2>
 
-      {message && <div className="mb-4 text-center text-sm text-red-600 font-medium">{message}</div>}
+      {message && <div className="mb-2 text-center text-sm text-red-600 font-medium">{message}</div>}
+      {warning && (
+        <div className="mb-2 text-center text-sm text-yellow-600 font-medium">
+          {warning} <br />
+          <Link to="/resend-code" className="text-blue-600 hover:underline font-semibold">إعادة إرسال كود التفعيل</Link>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="relative">
@@ -98,14 +111,20 @@ const Login = () => {
         onClick={() => window.location.href = googleLoginURL}
         className="bg-red-600 text-white py-2 px-4 rounded w-full hover:bg-red-700 transition flex items-center justify-center gap-2"
       >
-        <Globe  size={18} /> تسجيل الدخول باستخدام Google
+        <Globe size={18} /> تسجيل الدخول باستخدام Google
       </button>
-
 
       <div className="text-center text-sm mt-6">
         <span>ليس لديك حساب؟ </span>
         <Link to="/register" className="text-blue-600 font-medium hover:underline flex justify-center items-center gap-1 mt-1">
           <UserPlus size={16} /> إنشاء حساب جديد
+        </Link>
+      </div>
+
+      <div className="text-center text-sm mt-4">
+        <span>لم يصلك رمز التفعيل؟ </span>
+        <Link to="/resend-code" className="text-blue-600 font-medium hover:underline">
+          أعد إرسال كود التفعيل
         </Link>
       </div>
     </div>
