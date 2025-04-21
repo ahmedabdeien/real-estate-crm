@@ -70,6 +70,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/oauth-success" element={<OAuthSuccess />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="*" element={<NotFound />} />
 
           {/* صفحات للمستخدمين المسجلين */}
