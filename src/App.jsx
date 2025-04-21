@@ -73,9 +73,8 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/oauth-success" element={<OAuthSuccess />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
-          <Route path="/verify-code" element={<VerifyEmail />} />
           <Route path="/resend-code" element={<ResendCode />} />
-          <Route path="/verify-email" element={<VerifyCode />} />
+          <Route path="/verify-code" element={<VerifyCode />} />
           <Route path="*" element={<NotFound />} />
 
           {/* صفحات للمستخدمين المسجلين */}
