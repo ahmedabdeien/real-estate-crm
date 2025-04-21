@@ -53,6 +53,8 @@ import VerifyCode from './pages/VerifyCode';
 import ResendCode from './pages/ResendCode';
 import ResetPassword from './pages/ResetPassword';
 import ForgotPassword from './pages/ForgotPassword';
+import ChatWithAI from './pages/ChatWithAI';
+import ChatHistory from './pages/ChatHistory';
 
 
 
@@ -87,7 +89,9 @@ function App() {
             <Route path="/settings" element={<Settings />} /> 
             <Route path="/settings/theme" element={<ThemeSettings />} />
             <Route path="/notifications" element={<Notifications />} />
+            <Route path="/chat-with-ai" element={<ChatWithAI />} />
             <Route path="/notification-settings" element={<NotificationSettings />} />
+            <Route path="/chat-history" element={<ChatHistory />} />
           </Route>
 
           {/* Admin فقط */}
