@@ -24,7 +24,11 @@ const Register = () => {
     try {
       await axios.post('/auth/register', formData);
       setMessage('✅ تم إنشاء الحساب بنجاح!');
-      setTimeout(() => navigate('/login'), 1500);
+      
+      localStorage.setItem('pendingEmail', formData.email);
+
+     // 🟢 توجيه المستخدم إلى صفحة التفعيل
+      setTimeout(() => navigate('/verify-code'), 1500);
     } catch (err) {
       const resMsg = err.response?.data?.errors || err.response?.data?.msg || '❌ فشل في إنشاء الحساب';
       setMessage(resMsg);
