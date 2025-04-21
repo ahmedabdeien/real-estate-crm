@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import axios from '../api/axios';
 import { Mail, RotateCcw } from 'lucide-react';
+import { Navigate } from 'react-router-dom';
 
 const ResendCode = () => {
   const [email, setEmail] = useState('');
@@ -15,6 +16,7 @@ const ResendCode = () => {
     try {
       const res = await axios.post('/auth/resend-code', { email });
       setMessage(res.data.msg);
+      setTimeout(() => Navigate('/verify-code'), 1500);
     } catch (err) {
       setMessage(err.response?.data?.msg || 'حدث خطأ أثناء إعادة الإرسال');
     } finally {
