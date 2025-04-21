@@ -1,81 +1,78 @@
-// src/pages/VerifyCode.jsx
-import { useState } from 'react';
+// ✅ VerifyCode.jsx
+import React, { useState } from 'react';
 import axios from '../api/axios';
 import { useNavigate } from 'react-router-dom';
-import { MailCheck, KeyRound } from 'lucide-react';
+import { ShieldCheck, Mail, KeyRound } from 'lucide-react';
 
 const VerifyCode = () => {
-  const [formData, setFormData] = useState({ email: '', code: '' });
-  const [message, setMessage] = useState('');
+  const [email, setEmail] = useState('');
+  const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState(null);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
+  const handleVerify = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessage('');
+    setError(null);
+    setMessage(null);
+
     try {
-      const res = await axios.post('/auth/verify-code', formData);
+      const res = await axios.post('/auth/verify-code', { email, code });
       setMessage(res.data.msg);
       setTimeout(() => {
         navigate('/login');
-      }, 1500);
+      }, 2000);
     } catch (err) {
-      setMessage(err.response?.data?.msg || 'فشل في تفعيل الحساب');
+      setError(err.response?.data?.msg || 'فشل التحقق من الكود');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-12 p-6 bg-white shadow-md border rounded-md text-right animate-fade-in" dir="rtl">
-      <h2 className="text-2xl font-bold mb-4 text-center text-blue-700 flex items-center justify-center gap-2">
-        <MailCheck size={24} /> تأكيد كود التفعيل
-      </h2>
-
-      {message && (
-        <div className="mb-4 text-center text-sm font-medium text-green-600">
-          {message}
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
+      <form onSubmit={handleVerify} className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md w-full max-w-md">
+        <div className="flex items-center gap-2 mb-4">
+          <ShieldCheck className="text-blue-600 dark:text-blue-400" />
+          <h2 className="text-xl font-bold">تأكيد الحساب بالكود</h2>
         </div>
-      )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="relative">
+        {message && <div className="bg-green-100 text-green-700 p-2 rounded mb-3">{message}</div>}
+        {error && <div className="bg-red-100 text-red-700 p-2 rounded mb-3">{error}</div>}
+
+        <label className="block mb-2 text-sm">البريد الإلكتروني</label>
+        <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 p-2 rounded mb-4">
+          <Mail className="w-5 h-5 text-gray-500" />
           <input
             type="email"
-            name="email"
-            placeholder="البريد الإلكتروني"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
+            className="bg-transparent outline-none w-full text-sm"
           />
-          <MailCheck className="absolute top-2.5 right-2.5 text-gray-400" size={18} />
         </div>
 
-        <div className="relative">
+        <label className="block mb-2 text-sm">رمز التفعيل</label>
+        <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 p-2 rounded mb-4">
+          <KeyRound className="w-5 h-5 text-gray-500" />
           <input
             type="text"
-            name="code"
-            placeholder="كود التفعيل (6 أرقام)"
-            value={formData.code}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
+            maxLength="6"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
             required
+            className="bg-transparent outline-none w-full text-sm"
           />
-          <KeyRound className="absolute top-2.5 right-2.5 text-gray-400" size={18} />
         </div>
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
           disabled={loading}
+          className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
         >
-          {loading ? 'جاري التحقق...' : 'تفعيل الحساب'}
+          {loading ? 'جاري التحقق...' : 'تأكيد الكود'}
         </button>
       </form>
     </div>
