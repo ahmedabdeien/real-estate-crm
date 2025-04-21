@@ -49,6 +49,7 @@ import Notifications from './pages/Notifications';
 import NotificationSettings from './pages/NotificationSettings';
 
 import AIChatWidget from './components/AIChatWidget';
+import VerifyEmail from './pages/VerifyEmail';
 
 
 
