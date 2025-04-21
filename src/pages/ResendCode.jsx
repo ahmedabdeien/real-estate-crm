@@ -16,7 +16,7 @@ const ResendCode = () => {
     try {
       const res = await axios.post('/auth/resend-code', { email });
       setMessage(res.data.msg);
-      setTimeout(() => Navigate('/verify-code'), 1500);
+      setTimeout(() => Navigate('/verify-code'), 500);
     } catch (err) {
       setMessage(err.response?.data?.msg || 'حدث خطأ أثناء إعادة الإرسال');
     } finally {
@@ -25,7 +25,8 @@ const ResendCode = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-12 p-6 bg-white shadow-md border rounded-md text-right animate-fade-in" dir="rtl">
+    <div className="flex items-center justify-center h-screen w-full bg-gray-50 " dir="rtl">
+    <div className="bg-white p-6 rounded shadow-md w-full max-w-md border animate-fade-in" dir="rtl">
       <h2 className="text-2xl font-bold mb-4 text-center text-blue-700 flex items-center justify-center gap-2">
         <RotateCcw size={24} /> إعادة إرسال كود التفعيل
       </h2>
@@ -58,6 +59,7 @@ const ResendCode = () => {
           {loading ? 'جاري الإرسال...' : 'إعادة الإرسال'}
         </button>
       </form>
+    </div>
     </div>
   );
 };

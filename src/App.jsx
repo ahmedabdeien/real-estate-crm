@@ -51,6 +51,8 @@ import NotificationSettings from './pages/NotificationSettings';
 import AIChatWidget from './components/AIChatWidget';
 import VerifyCode from './pages/VerifyCode';
 import ResendCode from './pages/ResendCode';
+import ResetPassword from './pages/ResetPassword';
+import ForgotPassword from './pages/ForgotPassword';
 
 
 
@@ -74,6 +76,8 @@ function App() {
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/resend-code" element={<ResendCode />} />
           <Route path="/verify-code" element={<VerifyCode />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="*" element={<NotFound />} />
 
           {/* صفحات للمستخدمين المسجلين */}

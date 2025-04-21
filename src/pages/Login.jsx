@@ -121,12 +121,13 @@ const Login = () => {
         </Link>
       </div>
 
-      <div className="text-center text-sm mt-4">
-        <span>لم يصلك رمز التفعيل؟ </span>
-        <Link to="/resend-code" className="text-blue-600 font-medium hover:underline">
-          أعد إرسال كود التفعيل
-        </Link>
-      </div>
+      <p className="text-center text-sm mt-4">
+  <span>نسيت كلمة المرور؟ </span>
+  <Link to="/forgot-password" className="text-blue-600 hover:underline font-medium">
+    اضغط هنا لإعادة التعيين
+  </Link>
+</p>
+
     </div>
   );
 };

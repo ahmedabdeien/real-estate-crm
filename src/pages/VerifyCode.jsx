@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import axios from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 import { Mail, KeyRound, ShieldCheck } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const VerifyCode = () => {
   const navigate = useNavigate();
@@ -88,6 +89,12 @@ const VerifyCode = () => {
             تأكيد الكود
           </button>
         </form>
+        <div className="text-center text-sm mt-4">
+        <span>لم يصلك رمز التفعيل؟ </span>
+        <Link to="/resend-code" className="text-blue-600 font-medium hover:underline">
+          أعد إرسال كود التفعيل
+        </Link>
+      </div>
       </div>
     </div>
   );
