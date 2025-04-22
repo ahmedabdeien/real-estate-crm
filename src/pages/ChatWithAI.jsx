@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import axios from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 import { BotMessageSquare, SendHorizonal, Loader2, Paperclip, X } from 'lucide-react';
+import useAuthStore from './../store/useAuthStore';
 
 const ChatWithAI = () => {
   const [message, setMessage] = useState('');
@@ -11,6 +12,7 @@ const ChatWithAI = () => {
   const navigate = useNavigate();
   const chatEndRef = useRef(null);
   const fileInputRef = useRef(null);
+  const { userId } = useAuthStore(); // ⬅️ اجلب userId من Zustand
 
   // Scroll to bottom when conversations change
   useEffect(() => {
@@ -37,7 +39,7 @@ const ChatWithAI = () => {
 
     try {
       const res = await axios.post('/chat/ask', 
-        attachment ? formData : { message: userMessage },
+        attachment ? formData : { message: userMessage, userId }, // ✅ أضف userId هنا
         attachment ? { headers: { 'Content-Type': 'multipart/form-data' }} : {}
       );
 
