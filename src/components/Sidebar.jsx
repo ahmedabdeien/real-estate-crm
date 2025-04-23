@@ -3,7 +3,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Home, LayoutDashboard, Users, FileText, Building2, Receipt, Shield,
   Sun, Moon, LogOut, ChevronRight, ChevronLeft, UserCircle, Settings,
-  Bell
+  Bell,
+  Sparkles
 } from 'lucide-react';
 import useAuthStore from '../store/useAuthStore';
 import useThemeStore from '../store/useThemeStore';
@@ -11,6 +12,7 @@ import useSidebarStore from '../store/sidebarStore';
 import logo from '../assets/logo.png';
 import logoicon from '../assets/logoicon.png';
 import NotificationsDropdown from './../pages/NotificationsDropdown';
+import axios from '../api/axios';
 
 // Navigation items with roles-based access control
 const navItems = [
@@ -22,9 +24,10 @@ const navItems = [
   { to: '/contracts', label: 'العقود', icon: <FileText size={20} />, roles: ['admin', 'lawyer', 'viewer'] },
   { to: '/invoices', label: 'الفواتير', icon: <Receipt size={20} />, roles: ['admin', 'accountant', 'viewer'] },
   { to: '/users', label: 'المستخدمين', icon: <Shield size={20} />, roles: ['admin'] },
-  { to: '/settings', label: 'إعدادات', icon: <Settings size={20} />, roles: ['admin', 'sales', 'viewer', 'lawyer', 'accountant', 'user'] },
+  { to: '/chat-with-ai', label: ' شات Ai', icon: <Sparkles  size={20} />, roles: ['admin', 'sales', 'viewer', 'lawyer', 'accountant', 'user'] },
 
 ];
+const notificationSound = new Audio('/sounds/notification.mp3');
 
 const Sidebar = () => {
   const { role, name, logout } = useAuthStore();
@@ -75,6 +78,31 @@ const Sidebar = () => {
       {!collapsed && <span>{label}</span>}
     </button>
   );
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [newNotification, setNewNotification] = useState(false);
+
+
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      const res = await axios.get('/notifications');
+      const unread = res.data.filter(n => !n.isRead).length;
+  
+      if (unread > unreadCount) {
+        setNewNotification(true); // حالة تأثير
+        notificationSound.play();
+        setTimeout(() => setNewNotification(false), 500);
+      }
+  
+      setUnreadCount(unread);
+    };
+  
+    fetchUnreadCount();
+    const interval = setInterval(fetchUnreadCount, 1000);
+    return () => clearInterval(interval);
+  }, [unreadCount]); // عشان يتابع التغير
+  
+  
+
 
   return (
     <aside 
@@ -138,12 +166,17 @@ const Sidebar = () => {
       ${collapsed ? 'flex justify-center' : 'flex items-center gap-2'} 
       hover:bg-gray-100 dark:hover:bg-gray-800`}
   >
-    <Bell size={20} />
+    <div className="relative">
+      <Bell size={20} />
+      {unreadCount > 0 && (
+  <span className={`absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs px-1.5 py-0.5 shadow-md transition-transform duration-300 ${newNotification ? 'animate-bounce' : ''}`}>
+    {unreadCount}
+  </span>
+)}
+    </div>
     {!collapsed && <span className="truncate text-sm">الإشعارات</span>}
-
-    {/* القائمة المنسدلة هنا */} 
     {notifOpen && (
-      <div className="absolute right-0 top-full z-50 w-[320px]">
+      <div className="absolute right-2 top-full z-50 w-[90vw] sm:w-[320px] max-w-sm shadow-lg transition-all duration-300 ease-in-out">
         <NotificationsDropdown forceOpen hideButton />
       </div>
     )}
@@ -175,19 +208,29 @@ const Sidebar = () => {
 
         {/* Action Buttons */}
         <div className="flex flex-col gap-1">
+          
 
-          <ActionButton
-            onClick={toggleTheme}
-            icon={isDark ? <Sun size={18} /> : <Moon size={18} />}
-            label={isDark ? "الوضع النهاري" : "الوضع المظلم"}
-          />
+        <ActionButton
+  onClick={toggleTheme}
+  icon={isDark ? <Sun size={18} /> : <Moon size={18} />}
+  label={isDark ? "الوضع النهاري" : "الوضع المظلم"}
+  className="text-gray-500"
+/>
 
-          <ActionButton
-            onClick={handleLogout}
-            icon={<LogOut size={18} />}
-            label="تسجيل الخروج"
-            className="text-red-500 hover:text-red-600 "
-          />
+<ActionButton
+  onClick={() => navigate('/settings')}
+  icon={<Settings size={18} />}
+  label="الإعدادات"
+  className="text-gray-500"
+/>
+
+<ActionButton
+  onClick={handleLogout}
+  icon={<LogOut size={18} />}
+  label="تسجيل الخروج"
+  className=" text-red-500"
+/>
+
         </div>
       </div>
     </aside>

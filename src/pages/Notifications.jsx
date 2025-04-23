@@ -1,9 +1,8 @@
-
-// src/pages/Notifications.jsx
 import { useEffect, useState } from 'react';
 import axios from '../api/axios';
-import { CheckCircle2, Trash2, Bell, Info, FileText, Receipt } from 'lucide-react';
+import { Trash2, Bell, Info, FileText, Receipt } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
@@ -26,13 +25,8 @@ const Notifications = () => {
     }
   };
 
-  const markAllAsRead = async () => {
-    try {
-      await axios.patch('/notifications/mark-all');
-      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-    } catch (err) {
-      console.error('فشل في تعليم الكل كمقروء');
-    }
+  const markAllAsRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
   };
 
   const deleteNotification = async (id) => {
@@ -54,15 +48,16 @@ const Notifications = () => {
   };
 
   const getIcon = (type) => {
-    switch (type) {
-      case 'contract': return <FileText size={18} />;
-      case 'invoice': return <Receipt size={18} />;
-      default: return <Info size={18} />;
-    }
+    if (type?.startsWith('contract')) return <FileText size={18} />;
+    if (type?.startsWith('invoice')) return <Receipt size={18} />;
+    return <Info size={18} />;
   };
 
   const filteredNotifications = notifications.filter(n => {
-    return filter === 'all' || n.type === filter;
+    if (filter === 'all') return true;
+    if (filter === 'contract') return n.type?.startsWith('contract');
+    if (filter === 'invoice') return n.type?.startsWith('invoice');
+    return false;
   });
 
   return (
@@ -73,12 +68,8 @@ const Notifications = () => {
           الإشعارات
         </h2>
         <div className="flex gap-2 text-sm">
-          <button onClick={markAllAsRead} className="text-blue-600 hover:underline">
-            تعليم الكل كمقروء
-          </button>
-          <button onClick={deleteAllNotifications} className="text-red-600 hover:underline">
-            حذف الكل
-          </button>
+          <button onClick={markAllAsRead} className="text-blue-600 hover:underline">تعليم الكل كمقروء</button>
+          <button onClick={deleteAllNotifications} className="text-red-600 hover:underline">حذف الكل</button>
         </div>
       </div>
 
@@ -97,16 +88,14 @@ const Notifications = () => {
           {filteredNotifications.map((n) => (
             <li
               key={n._id}
-              onClick={() => navigate(n.link)}
-              className={`cursor-pointer p-4 border rounded-md flex justify-between items-start gap-2 ${
-                !n.read ? 'bg-blue-50' : 'bg-white'
-              }`}
+              onClick={() => navigate(`/`)}
+              className={`cursor-pointer p-4 border rounded-md flex justify-between items-start gap-2 ${!n.isRead ? 'bg-blue-50' : 'bg-white'}`}
             >
               <div className="flex items-start gap-3">
                 <div className="text-blue-600">{getIcon(n.type)}</div>
                 <div>
                   <p className="font-medium text-sm text-gray-800">{n.message}</p>
-                  <p className="text-xs text-gray-500 mt-1">بواسطة {n.createdByName} (ID: {n.createdById}) - {new Date(n.createdAt).toLocaleString()}</p>
+                  <p className="text-xs text-gray-500 mt-1">بواسطة {n.userName || n.createdByName} - {new Date(n.createdAt).toLocaleString()}</p>
                 </div>
               </div>
               <button onClick={(e) => { e.stopPropagation(); deleteNotification(n._id); }}>

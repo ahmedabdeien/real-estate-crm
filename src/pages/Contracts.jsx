@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../api/axios';
 import { Eye, FileSignature, FileText, Pencil, Trash } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { Plus, Download, Search } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
@@ -11,19 +11,35 @@ import { ClipLoader } from 'react-spinners';
 import Breadcrumb from '../components/Breadcrumb';
 import useAuthStore from '../store/useAuthStore';
 import useSweetAlert from '../utils/useSweetAlert';
-
+import useAIStore from '../store/useAIStore';
 const Contracts = () => {
   const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const { role } = useAuthStore();
   const { success, error, confirm } = useSweetAlert();
-
+  const { aiCommand, clearAICommand } = useAIStore();
   const filteredContracts = contracts.filter((c) =>
     c.customer?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     c.type?.includes(searchTerm)
   );
-
+  useEffect(() => {
+    if (aiCommand?.action === 'search_contracts') {
+      const customerName = aiCommand.data?.customerName;
+      if (customerName) {
+        setSearchTerm(customerName); // لتفعيل الفلتر
+        clearAICommand(); // عشان نمنع التكرار
+      }
+    }
+  
+    if (aiCommand?.action === 'add_contract') {
+      // مثال على فتح صفحة الإضافة
+      clearAICommand();
+      Navigate('/contracts/new'); // أو نفذ أي منطق لإضافة عقد
+    }
+  
+  }, [aiCommand]);
+  
   useEffect(() => {
     const fetchContracts = async () => {
       try {

@@ -56,6 +56,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ChatWithAI from './pages/ChatWithAI';
 import ChatHistory from './pages/ChatHistory';
 
+import '../src/pages/NotificationAnimation.css';
 
 
 function App() {
